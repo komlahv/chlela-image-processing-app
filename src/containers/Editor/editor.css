@@ -1,14 +1,23 @@
 .control {
-  margin: 24px;
+  padding: 8px 0;
+  margin: 12px 0;
+  display: grid;
+  justify-items: center;
 }
 
-.control-upper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  justify-items: center;
-  margin: 24px;
+.control-buttons {
+  display: inline-block;
+  margin: 8px auto;
 }
 
 .control-fields {
-  margin: 24px;
+  display: block;
+  padding: 24px auto;
+  border: 5px solid red;
+}
+
+.preview {
+  display: grid;
+  justify-items: center;
+  margin-top: 12vh;
 }

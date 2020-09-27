@@ -19,6 +19,10 @@ export interface ButtonProps {
    */
   label: string;
   /**
+   * Button state
+   */
+  disabled?: boolean;
+  /**
    * Optional click handler
    */
   onClick?: () => void;
@@ -27,22 +31,30 @@ export interface ButtonProps {
 /**
  * Primary UI component for user interaction
  */
-export const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   primary = false,
   size = 'medium',
   backgroundColor,
   label,
+  disabled,
   ...props
 }) => {
-  const mode = primary ? 'storybook-button--primary' : 'storybook-button--secondary';
+  const mode = primary
+    ? 'storybook-button--primary'
+    : 'storybook-button--secondary';
   return (
     <button
       type="button"
-      className={['storybook-button', `storybook-button--${size}`, mode].join(' ')}
+      className={['storybook-button', `storybook-button--${size}`, mode].join(
+        ' '
+      )}
       style={{ backgroundColor }}
+      disabled={disabled}
       {...props}
     >
       {label}
     </button>
   );
 };
+
+export default Button;

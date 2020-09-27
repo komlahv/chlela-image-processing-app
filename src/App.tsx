@@ -1,10 +1,11 @@
 import React from 'react';
-import './App.css';
 import Editor from './containers/Editor/Editor';
+import { Header } from './components/Header/Header';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div>
+      <Header />
       <Editor />
     </div>
   );

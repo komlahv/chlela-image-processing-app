@@ -3,9 +3,11 @@ import Jimp from 'jimp';
 import logo from '../../logo.svg';
 import './editor.css';
 
+import Button from '../../components/Button/Button';
+
 const Editor: React.FC = () => {
-  const [imageData, setImageData] = useState<string>(logo);
-  const [imageDataTemp, setImageDataTemp] = useState<string>(logo);
+  const [imageData, setImageData] = useState<string>('');
+  const [imageDataTemp, setImageDataTemp] = useState<string>('');
   const [MIMEType, setMIMEType] = useState<string>('');
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [xSize, setXSize] = useState<number>(0);
@@ -43,7 +45,7 @@ const Editor: React.FC = () => {
   };
 
   const handleEdit = async () => {
-    if (imageData !== logo) {
+    if (imageData) {
       try {
         const image: Jimp = await Jimp.read(
           Buffer.from(imageDataTemp, 'base64')
@@ -58,28 +60,11 @@ const Editor: React.FC = () => {
     }
   };
 
-  const handleClear = () => setImageData(logo);
+  const handleClear = () => setImageData('');
 
   return (
     <>
       <div className="control">
-        <div className="control-upper">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e: React.ChangeEvent<HTMLInputElement> | any) =>
-              handleUpload(e.target.files[0])
-            }
-          />
-          <div>
-            <button onClick={handleEdit}>Apply</button>
-            <button onClick={handleClear}>Clear</button>
-            <button onClick={handleClear} disabled>
-              Publish
-            </button>
-          </div>
-        </div>
-
         <div className="control-fields">
           <label htmlFor="rotation"> Rotate </label>
           <input
@@ -113,8 +98,31 @@ const Editor: React.FC = () => {
             />
           </div>
         </div>
+
+        <div className="control-buttons">
+          <Button onClick={handleEdit} label="Apply" />
+          <Button onClick={handleClear} label="Clear" />
+          <Button
+            onClick={handleClear}
+            label="Publish"
+            primary
+            disabled={true}
+          />
+        </div>
       </div>
-      <img src={imageData} alt="output" style={{ maxWidth: '100vw' }} />
+      <div className="preview">
+        {imageData ? (
+          <img src={imageData} alt="output" style={{ maxWidth: '100vw' }} />
+        ) : (
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e: React.ChangeEvent<HTMLInputElement> | any) =>
+              handleUpload(e.target.files[0])
+            }
+          />
+        )}
+      </div>
     </>
   );
 };
