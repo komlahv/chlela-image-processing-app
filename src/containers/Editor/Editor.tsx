@@ -8,8 +8,8 @@ const Editor: React.FC = () => {
   const [imageDataTemp, setImageDataTemp] = useState<string>(logo);
   const [MIMEType, setMIMEType] = useState<string>('');
   const [rotateDegree, setRotateDegree] = useState<number>(0);
-  const [xSize, setXSize] = useState<number>(1280);
-  const [ySize, setYSize] = useState<number>(720);
+  const [xSize, setXSize] = useState<number>(0);
+  const [ySize, setYSize] = useState<number>(0);
 
   const toBase64 = (file: File) =>
     new Promise((resolve, reject) => {
@@ -32,6 +32,8 @@ const Editor: React.FC = () => {
         const image: Jimp = await Jimp.read(
           Buffer.from(base64DataTrim, 'base64')
         );
+        setXSize(image.bitmap.width);
+        setYSize(image.bitmap.height);
         const preview: string = await image.getBase64Async('image/png');
         setImageData(preview);
       } catch (e) {
