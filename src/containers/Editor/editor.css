@@ -1,0 +1,14 @@
+.control {
+  margin: 24px;
+}
+
+.control-upper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  margin: 24px;
+}
+
+.control-fields {
+  margin: 24px;
+}
