@@ -19,5 +19,5 @@
 .preview {
   display: grid;
   justify-items: center;
-  margin-top: 12vh;
+  margin-top: 24px;
 }

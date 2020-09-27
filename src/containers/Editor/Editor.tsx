@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Jimp from 'jimp';
-import logo from '../../logo.svg';
+import ImageUploader from 'react-images-upload';
 import './editor.css';
 
 import Button from '../../components/Button/Button';
@@ -114,12 +114,13 @@ const Editor: React.FC = () => {
         {imageData ? (
           <img src={imageData} alt="output" style={{ maxWidth: '100vw' }} />
         ) : (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e: React.ChangeEvent<HTMLInputElement> | any) =>
-              handleUpload(e.target.files[0])
-            }
+          <ImageUploader
+            withIcon={true}
+            buttonText="Choose image"
+            onChange={(file: any[]) => handleUpload(file[0])}
+            imgExtension={['.jpg', '.png', '.gif']}
+            maxFileSize={5242880}
+            singleImage={true}
           />
         )}
       </div>

@@ -13,6 +13,7 @@
     "jimp": "^0.16.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-images-upload": "^1.2.8",
     "react-scripts": "3.4.3",
     "typescript": "~3.7.2"
   },
