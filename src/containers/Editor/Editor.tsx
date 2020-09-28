@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Jimp from 'jimp';
 import ImageUploader from 'react-images-upload';
+import AvatarEditor from 'react-avatar-editor';
 import './editor.css';
 
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 
 const Editor: React.FC = () => {
-  const [imageData, setImageData] = useState<string>('');
+  const [imageData, setImageData] = useState<any>('');
   const [imageDataTemp, setImageDataTemp] = useState<string>('');
   const [MIMEType, setMIMEType] = useState<string>('');
   const [rotateDegree, setRotateDegree] = useState<number>(0);
-  const [xSize, setXSize] = useState<number>(0);
-  const [ySize, setYSize] = useState<number>(0);
+  const [scale, setScale] = useState<number>(1.2);
 
   const toBase64 = (file: File) =>
     new Promise((resolve, reject) => {
@@ -32,29 +32,7 @@ const Editor: React.FC = () => {
           ''
         );
         setImageDataTemp(base64DataTrim);
-        const image: Jimp = await Jimp.read(
-          Buffer.from(base64DataTrim, 'base64')
-        );
-        setXSize(image.bitmap.width);
-        setYSize(image.bitmap.height);
-        const preview: string = await image.getBase64Async('image/png');
-        setImageData(preview);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
-
-  const handleEdit = async () => {
-    if (imageData) {
-      try {
-        const image: Jimp = await Jimp.read(
-          Buffer.from(imageDataTemp, 'base64')
-        );
-        image.resize(xSize, ySize);
-        image.rotate(rotateDegree);
-        const preview: string = await image.getBase64Async('image/png');
-        setImageData(preview);
+        setImageData(base64Data);
       } catch (e) {
         console.log(e);
       }
@@ -77,31 +55,19 @@ const Editor: React.FC = () => {
             }
           />
 
-          <div className="control-fields__size-input">
-            <b>Size:</b>
-            <Input
-              id="xSize"
-              label="X"
-              type="number"
-              value={xSize}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setXSize(Number(e.target.value))
-              }
-            />
-            <Input
-              id="ySize"
-              label="Y"
-              type="number"
-              value={ySize}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setYSize(Number(e.target.value))
-              }
-            />
-          </div>
+          <Input
+            id="xSize"
+            label="Scale"
+            type="number"
+            value={scale}
+            step={0.1}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setScale(Number(e.target.value))
+            }
+          />
         </div>
 
         <div className="control-buttons">
-          <Button onClick={handleEdit} label="Apply" />
           <Button onClick={handleClear} label="Clear" />
           <Button
             onClick={handleClear}
@@ -113,7 +79,15 @@ const Editor: React.FC = () => {
       </div>
       <div className="preview">
         {imageData ? (
-          <img src={imageData} alt="output" style={{ maxWidth: '100vw' }} />
+          <AvatarEditor
+            image={imageData}
+            width={716}
+            height={559}
+            border={30}
+            color={[255, 255, 255, 0.6]} // RGBA
+            scale={scale}
+            rotate={rotateDegree}
+          />
         ) : (
           <ImageUploader
             withIcon={true}

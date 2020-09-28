@@ -27,6 +27,10 @@ export interface InputProps {
    */
   value?: string | number;
   /**
+   * input value
+   */
+  step?: number;
+  /**
    * Optional click handler
    */
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
