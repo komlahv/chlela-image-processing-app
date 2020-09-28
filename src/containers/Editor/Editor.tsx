@@ -13,6 +13,9 @@ const Editor: React.FC = () => {
   const [MIMEType, setMIMEType] = useState<string>('');
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [scale, setScale] = useState<number>(1.2);
+  const [canvasWidth, setCanvasWidth] = useState<number>(716);
+  const [canvaseHeight, setCanvaseHeight] = useState<number>(559);
+  const [canvaBorder, setCanvasBorder] = useState<number>(30);
 
   const toBase64 = (file: File) =>
     new Promise((resolve, reject) => {
@@ -25,6 +28,13 @@ const Editor: React.FC = () => {
   const handleUpload = async (file: File) => {
     if (file) {
       setMIMEType(file.type);
+      const { innerWidth: width } = window;
+      if (width < 716) {
+        setCanvasWidth(250);
+        setCanvaseHeight(153);
+        setCanvasBorder(10);
+      }
+
       try {
         const base64Data: any = await toBase64(file);
         const base64DataTrim = base64Data.replace(
@@ -39,7 +49,11 @@ const Editor: React.FC = () => {
     }
   };
 
-  const handleClear = () => setImageData('');
+  const handleClear = () => {
+    setImageData('');
+    setScale(1.2);
+    setRotateDegree(0);
+  };
 
   return (
     <>
@@ -81,9 +95,9 @@ const Editor: React.FC = () => {
         {imageData ? (
           <AvatarEditor
             image={imageData}
-            width={716}
-            height={559}
-            border={30}
+            width={canvasWidth}
+            height={canvaseHeight}
+            border={canvaBorder}
             color={[255, 255, 255, 0.6]} // RGBA
             scale={scale}
             rotate={rotateDegree}
