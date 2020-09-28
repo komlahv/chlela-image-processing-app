@@ -77,8 +77,8 @@ const Editor: React.FC = () => {
             }
           />
 
-          <div>
-            Size:
+          <div className="control-fields__size-input">
+            <b>Size:</b>
             <Input
               id="xSize"
               label="X"

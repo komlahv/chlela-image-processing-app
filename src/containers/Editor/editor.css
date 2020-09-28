@@ -17,8 +17,29 @@
   padding: 8px auto;
 }
 
+.control-fields__size-input {
+  display: flex;
+  justify-items: center;
+}
+
 .preview {
   display: grid;
   justify-items: center;
   margin-top: 24px;
+}
+
+@media only screen and (max-width: 952px) {
+
+  .control-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: right;
+    border: 1px solid rgb(189, 189, 189);
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  .control-fields__size-input {
+    display: grid;
+  }
 }

@@ -1,7 +1,7 @@
 .chlela-input {
   display: inline-block;
   text-align: center;
-  margin: 4px 8px;
+  margin: 0 8px;
 }
 
 .chlela-input__label {
@@ -34,4 +34,14 @@
   outline: none;
   border-radius: 8px;
   border-color: #6aa3ff;
+}
+
+@media only screen and (max-width: 952px) {
+
+  /* For mobile phones: */
+  .chlela-input {
+    display: grid;
+    text-align: center;
+    margin: 0 8px;
+  }
 }
