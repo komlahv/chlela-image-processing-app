@@ -8,6 +8,16 @@
   line-height: 1;
 }
 
+.storybook-button:focus {
+  outline: none;
+  border-radius: 1em;
+}
+
+.storybook-button:hover {
+  border-radius: 1em;
+  background-color: #a2abb1;
+}
+
 .storybook-button--primary {
   color: white;
   background-color: #0061FE;

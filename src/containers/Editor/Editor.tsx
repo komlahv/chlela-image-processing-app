@@ -4,6 +4,7 @@ import ImageUploader from 'react-images-upload';
 import './editor.css';
 
 import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
 
 const Editor: React.FC = () => {
   const [imageData, setImageData] = useState<string>('');
@@ -66,9 +67,9 @@ const Editor: React.FC = () => {
     <>
       <div className="control">
         <div className="control-fields">
-          <label htmlFor="rotation"> Rotate </label>
-          <input
+          <Input
             id="rotation"
+            label="Rotate"
             type="number"
             value={rotateDegree}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -78,18 +79,18 @@ const Editor: React.FC = () => {
 
           <div>
             Size:
-            <label htmlFor="xSize"> x </label>
-            <input
+            <Input
               id="xSize"
+              label="X"
               type="number"
               value={xSize}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setXSize(Number(e.target.value))
               }
             />
-            <label htmlFor="ySize"> y </label>
-            <input
+            <Input
               id="ySize"
+              label="Y"
               type="number"
               value={ySize}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

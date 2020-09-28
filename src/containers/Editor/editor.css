@@ -11,9 +11,10 @@
 }
 
 .control-fields {
-  display: block;
-  padding: 24px auto;
-  border: 5px solid red;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  padding: 8px auto;
 }
 
 .preview {

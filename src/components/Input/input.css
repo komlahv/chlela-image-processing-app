@@ -1,0 +1,37 @@
+.chlela-input {
+  display: inline-block;
+  text-align: center;
+  margin: 4px 8px;
+}
+
+.chlela-input__label {
+  color: #333;
+}
+
+.chlela-input__field {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 12px;
+  color: #0061FE;
+  transition: all 0.3s ease-out;
+  box-sizing: border-box;
+}
+
+.chlela-input__field--primary {
+  border: 2px solid #0061FE;
+}
+
+.chlela-input__field--warning {
+  color: #e04700;
+  border: 4px solid #e04700;
+}
+
+.chlela-input__field:hover {
+  border-radius: 8px
+}
+
+.chlela-input__field:focus {
+  outline: none;
+  border-radius: 8px;
+  border-color: #6aa3ff;
+}

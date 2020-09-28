@@ -36,7 +36,7 @@ const Button: React.FC<ButtonProps> = ({
   size = 'medium',
   backgroundColor,
   label,
-  disabled,
+  disabled = false,
   ...props
 }) => {
   const mode = primary
