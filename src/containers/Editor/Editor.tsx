@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Jimp from 'jimp';
 import ImageUploader from 'react-images-upload';
 import AvatarEditor from 'react-avatar-editor';
 import './editor.css';
@@ -10,12 +9,13 @@ import Input from '../../components/Input/Input';
 const Editor: React.FC = () => {
   const [imageData, setImageData] = useState<any>('');
   const [imageDataTemp, setImageDataTemp] = useState<string>('');
-  const [MIMEType, setMIMEType] = useState<string>('');
+
+  const [canvas, setCanvas] = useState<any>();
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [scale, setScale] = useState<number>(1.2);
   const [canvasWidth, setCanvasWidth] = useState<number>(716);
-  const [canvaseHeight, setCanvaseHeight] = useState<number>(559);
-  const [canvaBorder, setCanvasBorder] = useState<number>(30);
+  const [canvasHeight, setCanvasHeight] = useState<number>(559);
+  const [canvasBorder, setCanvasBorder] = useState<number>(30);
 
   const toBase64 = (file: File) =>
     new Promise((resolve, reject) => {
@@ -27,11 +27,10 @@ const Editor: React.FC = () => {
 
   const handleUpload = async (file: File) => {
     if (file) {
-      setMIMEType(file.type);
       const { innerWidth: width } = window;
       if (width < 716) {
         setCanvasWidth(250);
-        setCanvaseHeight(153);
+        setCanvasHeight(153);
         setCanvasBorder(10);
       }
 
@@ -54,6 +53,31 @@ const Editor: React.FC = () => {
     setScale(1.2);
     setRotateDegree(0);
   };
+
+  const handlePublish = async() => {
+    if (canvas) {
+      const canvasScaled = canvas.getImageScaledToCanvas();
+
+      //Add frame on backend
+      const base64Data: string = canvasScaled.toDataURL()
+      const data: {} = {
+        imageData : base64Data
+      }
+
+      const res: any = await fetch("https://chlela-image-api.herokuapp.com/api/images", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+
+      const imageDataJson = await res.json();
+      setImageDataTemp(imageDataJson.imageData);
+    }
+  };
+
+  const setEditorRef = (editor: any) => setCanvas(editor);
 
   return (
     <>
@@ -84,24 +108,28 @@ const Editor: React.FC = () => {
         <div className="control-buttons">
           <Button onClick={handleClear} label="Clear" />
           <Button
-            onClick={handleClear}
+            onClick={handlePublish}
             label="Publish"
             primary
-            disabled={true}
           />
         </div>
       </div>
       <div className="preview">
         {imageData ? (
-          <AvatarEditor
-            image={imageData}
-            width={canvasWidth}
-            height={canvaseHeight}
-            border={canvaBorder}
-            color={[255, 255, 255, 0.6]} // RGBA
-            scale={scale}
-            rotate={rotateDegree}
-          />
+          <div>
+            <AvatarEditor
+              ref={setEditorRef}
+              image={imageData}
+              width={canvasWidth}
+              height={canvasHeight}
+              border={canvasBorder}
+              color={[0, 97, 254, 0.6]} // RGBA
+              scale={scale}
+              rotate={rotateDegree}
+            />
+            <img src={imageDataTemp} alt='output' width={756}
+             height={599} style={{display:"block", margin:"0 auto"}}/>
+          </div>
         ) : (
           <ImageUploader
             withIcon={true}
