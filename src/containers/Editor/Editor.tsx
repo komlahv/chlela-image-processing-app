@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import ImageUploader from 'react-images-upload';
 import AvatarEditor from 'react-avatar-editor';
 import download from 'downloadjs';
+
 import './editor.css';
 import loading from '../../loading.gif';
+
+import { toBase64 } from '../../shared/functions';
 
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
@@ -14,29 +17,25 @@ const Editor: React.FC = () => {
   const [imageData, setImageData] = useState<string>('');
   const [framedImageData, setFramedImageData] = useState<string>('');
 
-  const [canvas, setCanvas] = useState<any>();
+  const [canvas, setCanvas] = useState<AvatarEditor>();
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [scale, setScale] = useState<number>(1.2);
   const [canvasWidth, setCanvasWidth] = useState<number>(716);
   const [canvasHeight, setCanvasHeight] = useState<number>(559);
   const [canvasBorder, setCanvasBorder] = useState<number>(30);
 
-  const toBase64 = (file: File) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
+  const PrepareCanvas = () => {
+    const { innerWidth: width } = window;
+    if (width < 716) {
+      setCanvasWidth(250);
+      setCanvasHeight(153);
+      setCanvasBorder(10);
+    }
+  };
 
   const handleUpload = async (file: File) => {
     if (file) {
-      const { innerWidth: width } = window;
-      if (width < 716) {
-        setCanvasWidth(250);
-        setCanvasHeight(153);
-        setCanvasBorder(10);
-      }
+      PrepareCanvas();
       try {
         const base64Data: any = await toBase64(file);
         setImageData(base64Data);
@@ -54,27 +53,30 @@ const Editor: React.FC = () => {
   };
 
   const handleDownload = () => {
-    download(framedImageData, "framed-image.png", "image/png");
+    download(framedImageData, 'framed-image.png', 'image/png');
   };
 
-  const handlePublish = async() => {
+  const handlePublish = async () => {
     if (canvas) {
       setIsLoading(true);
       const canvasScaled = canvas.getImageScaledToCanvas();
 
       //Add frame on backend
-      const base64Data: string = canvasScaled.toDataURL()
+      const base64Data: string = canvasScaled.toDataURL();
       const data: {} = {
-        imageData : base64Data
-      }
+        imageData: base64Data,
+      };
 
-      const res: any = await fetch("https://chlela-image-api.herokuapp.com/api/images", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      })
+      const res: Response = await fetch(
+        'https://chlela-image-api.herokuapp.com/api/images',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const imageDataJson = await res.json();
       setFramedImageData(imageDataJson.imageData);
@@ -82,7 +84,7 @@ const Editor: React.FC = () => {
     }
   };
 
-  const setEditorRef = (editor: any) => setCanvas(editor);
+  const setEditorRef = (editor: AvatarEditor) => setCanvas(editor);
 
   return (
     <>
@@ -99,7 +101,7 @@ const Editor: React.FC = () => {
           />
 
           <Input
-            id="xSize"
+            id="scale"
             label="Scale"
             type="number"
             value={scale}
@@ -112,44 +114,51 @@ const Editor: React.FC = () => {
 
         <div className="control-buttons">
           <Button onClick={handleClear} label="Clear" />
-          <Button
-            onClick={handlePublish}
-            label="Publish"
-            primary
-          />
+          <Button onClick={handlePublish} label="Publish" primary />
         </div>
       </div>
+
       <div className="preview">
+        {isLoading && (
+          <img
+            src={loading}
+            width={canvasWidth}
+            height={canvasHeight}
+            alt="loading"
+          />
+        )}
 
-      { isLoading && <img src={loading}  width={canvasWidth} height={canvasHeight} alt='loading'/>}
-
-      {framedImageData && (
-      <>
-        <Button onClick={handleDownload} label="Download" primary/>
-        <img src={framedImageData} alt='output' width={canvasWidth}
-          height={canvasHeight} style={{display:"inline-block", margin:"4px auto"}}/>
-      </>
-      )}
-
-        {imageData && !framedImageData && !isLoading && (
-          <div>
-            <AvatarEditor
-              ref={setEditorRef}
-              image={imageData}
+        {framedImageData && (
+          <>
+            <Button onClick={handleDownload} label="Download" primary />
+            <img
+              src={framedImageData}
+              alt="output"
               width={canvasWidth}
               height={canvasHeight}
-              border={canvasBorder}
-              color={[0, 97, 254, 0.6]} // RGBA
-              scale={scale}
-              rotate={rotateDegree}
+              style={{ display: 'inline-block', margin: '4px auto' }}
             />
-          </div>
+          </>
         )}
-        { !imageData && !framedImageData && (
+
+        {imageData && !framedImageData && !isLoading && (
+          <AvatarEditor
+            ref={setEditorRef}
+            image={imageData}
+            width={canvasWidth}
+            height={canvasHeight}
+            border={canvasBorder}
+            color={[0, 97, 254, 0.6]} // RGBA
+            scale={scale}
+            rotate={rotateDegree}
+          />
+        )}
+
+        {!imageData && !framedImageData && (
           <ImageUploader
             withIcon={true}
             buttonText="Choose image"
-            onChange={(file: any[]) => handleUpload(file[0])}
+            onChange={(file: File[]) => handleUpload(file[0])}
             imgExtension={['.jpg', '.png', '.gif']}
             maxFileSize={5242880}
             singleImage={true}

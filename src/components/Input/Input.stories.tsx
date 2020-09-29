@@ -20,8 +20,8 @@ Primary.args = {
   value: 'John',
 };
 
-export const warning = Template.bind({});
-warning.args = {
+export const Warning = Template.bind({});
+Warning.args = {
   primary: false,
   label: 'Name',
   value: 'John',
