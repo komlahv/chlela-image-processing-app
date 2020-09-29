@@ -159,7 +159,7 @@ const Editor: React.FC = () => {
             withIcon={true}
             buttonText="Choose image"
             onChange={(file: File[]) => handleUpload(file[0])}
-            imgExtension={['.jpg', '.png', '.gif']}
+            imgExtension={['.jpg', '.jpeg', '.png', '.gif']}
             maxFileSize={5242880}
             singleImage={true}
           />
