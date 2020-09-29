@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import ImageUploader from 'react-images-upload';
 import AvatarEditor from 'react-avatar-editor';
+import download from 'downloadjs';
 import './editor.css';
+import loading from '../../loading.gif';
 
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 
 const Editor: React.FC = () => {
-  const [imageData, setImageData] = useState<any>('');
-  const [imageDataTemp, setImageDataTemp] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [imageData, setImageData] = useState<string>('');
+  const [framedImageData, setFramedImageData] = useState<string>('');
 
   const [canvas, setCanvas] = useState<any>();
   const [rotateDegree, setRotateDegree] = useState<number>(0);
@@ -33,14 +37,8 @@ const Editor: React.FC = () => {
         setCanvasHeight(153);
         setCanvasBorder(10);
       }
-
       try {
         const base64Data: any = await toBase64(file);
-        const base64DataTrim = base64Data.replace(
-          /^data:image\/\w+;base64,/,
-          ''
-        );
-        setImageDataTemp(base64DataTrim);
         setImageData(base64Data);
       } catch (e) {
         console.log(e);
@@ -50,12 +48,18 @@ const Editor: React.FC = () => {
 
   const handleClear = () => {
     setImageData('');
+    setFramedImageData('');
     setScale(1.2);
     setRotateDegree(0);
   };
 
+  const handleDownload = () => {
+    download(framedImageData, "framed-image.png", "image/png");
+  };
+
   const handlePublish = async() => {
     if (canvas) {
+      setIsLoading(true);
       const canvasScaled = canvas.getImageScaledToCanvas();
 
       //Add frame on backend
@@ -73,7 +77,8 @@ const Editor: React.FC = () => {
       })
 
       const imageDataJson = await res.json();
-      setImageDataTemp(imageDataJson.imageData);
+      setFramedImageData(imageDataJson.imageData);
+      setIsLoading(false);
     }
   };
 
@@ -115,7 +120,18 @@ const Editor: React.FC = () => {
         </div>
       </div>
       <div className="preview">
-        {imageData ? (
+
+      { isLoading && <img src={loading}  width={canvasWidth} height={canvasHeight} alt='loading'/>}
+
+      {framedImageData && (
+      <>
+        <Button onClick={handleDownload} label="Download" primary/>
+        <img src={framedImageData} alt='output' width={canvasWidth}
+          height={canvasHeight} style={{display:"inline-block", margin:"4px auto"}}/>
+      </>
+      )}
+
+        {imageData && !framedImageData && !isLoading && (
           <div>
             <AvatarEditor
               ref={setEditorRef}
@@ -127,10 +143,9 @@ const Editor: React.FC = () => {
               scale={scale}
               rotate={rotateDegree}
             />
-            <img src={imageDataTemp} alt='output' width={756}
-             height={599} style={{display:"block", margin:"0 auto"}}/>
           </div>
-        ) : (
+        )}
+        { !imageData && !framedImageData && (
           <ImageUploader
             withIcon={true}
             buttonText="Choose image"
