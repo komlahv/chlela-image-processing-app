@@ -95,6 +95,8 @@ const Editor: React.FC = () => {
   const handlePublish = async () => {
     if (canvas) {
       setIsLoading(true);
+      setCanvasHeight(canvasSize.default.height);
+      setCanvasWidth(canvasSize.default.width);
       const canvasScaled = canvas.getImageScaledToCanvas();
 
       //Add frame on backend
