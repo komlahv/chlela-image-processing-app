@@ -12,6 +12,16 @@ import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 
 const Editor: React.FC = () => {
+  const canvasSize = {
+    default: {
+      width: 716,
+      height: 559,
+    },
+    mobile: {
+      width: 250,
+      height: 153,
+    },
+  };
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [imageData, setImageData] = useState<string>('');
@@ -20,22 +30,48 @@ const Editor: React.FC = () => {
   const [canvas, setCanvas] = useState<AvatarEditor>();
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [scale, setScale] = useState<number>(1.2);
-  const [canvasWidth, setCanvasWidth] = useState<number>(716);
-  const [canvasHeight, setCanvasHeight] = useState<number>(559);
+  const [canvasWidth, setCanvasWidth] = useState<number>(
+    canvasSize.default.width
+  );
+  const [canvasHeight, setCanvasHeight] = useState<number>(
+    canvasSize.default.height
+  );
   const [canvasBorder, setCanvasBorder] = useState<number>(30);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  const PrepareCanvas = () => {
+  const screenCheck = () => {
     const { innerWidth: width } = window;
     if (width < 716) {
-      setCanvasWidth(250);
-      setCanvasHeight(153);
+      setCanvasWidth(canvasSize.mobile.width);
+      setCanvasHeight(canvasSize.mobile.height);
       setCanvasBorder(10);
+      setIsMobile(true);
     }
+  };
+
+  const handleRotate = (val: number) => {
+    //Prevent orientation change
+    if ((Math.abs(val) + 180) % 180 !== 0) {
+      setCanvasHeight(
+        isMobile ? canvasSize.mobile.width : canvasSize.default.width
+      );
+      setCanvasWidth(
+        isMobile ? canvasSize.mobile.height : canvasSize.default.height
+      );
+    } else {
+      setCanvasHeight(
+        isMobile ? canvasSize.mobile.height : canvasSize.default.height
+      );
+      setCanvasWidth(
+        isMobile ? canvasSize.mobile.width : canvasSize.default.width
+      );
+    }
+    setRotateDegree(val);
   };
 
   const handleUpload = async (file: File) => {
     if (file) {
-      PrepareCanvas();
+      screenCheck();
       try {
         const base64Data: any = await toBase64(file);
         setImageData(base64Data);
@@ -96,7 +132,7 @@ const Editor: React.FC = () => {
             type="number"
             value={rotateDegree}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setRotateDegree(Number(e.target.value))
+              handleRotate(Number(e.target.value))
             }
           />
 
