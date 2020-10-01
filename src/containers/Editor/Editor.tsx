@@ -97,6 +97,7 @@ const Editor: React.FC = () => {
       setIsLoading(true);
       setCanvasHeight(canvasSize.default.height);
       setCanvasWidth(canvasSize.default.width);
+      screenCheck();
       const canvasScaled = canvas.getImageScaledToCanvas();
 
       //Add frame on backend
