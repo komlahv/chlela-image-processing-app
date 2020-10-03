@@ -203,6 +203,25 @@ const Editor: React.FC = () => {
             singleImage={true}
           />
         )}
+
+        <div className="image-control-bar">
+          <Button
+            onClick={() => setScale(Number((scale + 0.1).toFixed(1)))}
+            label="Scale +"
+          />
+          <Button
+            onClick={() => setScale(Number((scale - 0.1).toFixed(1)))}
+            label="Scale -"
+          />
+          <Button
+            onClick={() => handleRotate(rotateDegree - 1)}
+            label="Rotate Left"
+          />
+          <Button
+            onClick={() => handleRotate(rotateDegree + 1)}
+            label="Rotate Right"
+          />
+        </div>
       </div>
     </>
   );
