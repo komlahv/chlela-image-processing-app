@@ -2,7 +2,6 @@ import React from 'react';
 
 import Button from '../Button/Button';
 import './header.css';
-import logo from '../../chlela-logo.jpg';
 
 export interface HeaderProps {
   user?: {};
@@ -12,8 +11,8 @@ export const Header: React.FC<HeaderProps> = ({ user }) => (
   <header>
     <div className="wrapper">
       <div>
-        <img src={logo} alt="logo" width="32" height="32" />
-        <h1>Chlela</h1>
+        <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="logo" width="32" height="32" />
+        <h1>Framer</h1>
       </div>
       <div>
         {user ? (
